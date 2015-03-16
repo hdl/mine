@@ -206,8 +206,12 @@ int main(int argc, char *argv[])
     int action_row=0;
     int action_col=0;
     int action;
-    if(argc != 4 && argc !=5){
-        printf("%d Usage: ./mine_sweeper.out row col num_min (seed)\n", argc);
+    if(argc <4){
+        printf("Not enough arguments. Usage:\n./mine_sweeper.out num_rows num_cols num_mines [seed])\n");
+        return 0;
+    }
+    if(argc >6){
+        printf("Too many arguments. Usage:\n./mine_sweeper.out num_rows num_cols num_mines [seed])\n");
         return 0;
     }
     board.row = atoi(argv[1]);
@@ -228,6 +232,7 @@ int main(int argc, char *argv[])
 
     place_mine(board);
     place_hint(board);
+    print_status(board);
 
     //print_value(board.values, board.row, board.col);
 
