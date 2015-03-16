@@ -129,8 +129,13 @@ void recsive_reveal(board_t board, int action_row, int action_col){
 
 
 	//printf("current: %d, %d\n", action_row, action_col);
-	if(action_col<0 || action_row<0 || action_row>=board.row || action_col >= board.col){ //terminated
+	if(action_col<0 || action_row<0 || action_row>=board.row || action_col >= board.col ){ //terminated
 		//printf("return because terminated\n");
+		return;
+	}
+	if( board.status[action_row*board.col +action_col]=='?' || board.status[action_row*board.col +action_col]=='!' ){
+
+		board.visit[action_row * board.col + action_col]=1;
 		return;
 	}
 
@@ -250,6 +255,10 @@ int main(int argc, char *argv[])
 		scanf("%d %d", &action_row, &action_col);
 		if(action_row<0 || action_row>board.row-1 || action_col<0 || action_col> board.col-1)
 			continue;
+		if(board.status[action_row * board.col + action_col]=='r'){
+			printf("This tile is already revealed.\n");
+			continue;                
+		}
 		if(board.status[action_row * board.col + action_col]!='?' && board.status[action_row * board.col + action_col]!='!'){
 			printf("Enter Action\n0. Reveal\n1. Question\n2. Mark\n3. Cancel\nAction: ");
 			scanf("%d", &action);
