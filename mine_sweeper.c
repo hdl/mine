@@ -66,23 +66,24 @@ void print_status(board_t board){
     printf("%d\n",i);
 }
 
-void place_mine(board_t board){
+void place_mine(board_t *board){
     int rand_row=0;
     int rand_col=0;
     int counter=0;
-    //printf("seed is %d", board.seed);
-    srand(board.seed);
+    //printf("seed is %d", board->seed);
+    srand(board->seed);
     while(1){
-        rand_row = rand() % board.row;
-        rand_col = rand() % board.col;
-        if(board.values[rand_row * board.col + rand_col] != '*'){
+        rand_col = rand() % board->col;
+        rand_row = rand() % board->row;
+
+        if(board->values[rand_row * board->col + rand_col] != '*'){
             printf("Placing mine at %d, %d\n", rand_row, rand_col);
-            board.values[rand_row * board.col + rand_col]='*';
+            board->values[rand_row * board->col + rand_col]='*';
             counter++;
         }else{
             continue;
         }
-        if(counter == board.mine_num)
+        if(counter == board->mine_num)
             return;
 
     }
@@ -128,13 +129,14 @@ void recsive_reveal(board_t board, int action_row, int action_col){
 
 
     //printf("current: %d, %d\n", action_row, action_col);
-    if(action_row*board.col + action_col<0 || action_row*board.col+action_col>board.row*board.col-1){ //terminated
+    if(action_col<0 || action_row<0 || action_row>=board.row || action_col >= board.col){ //terminated
         //printf("return because terminated\n");
         return;
     }
 
     if(board.values[action_row * board.col + action_col]!='0'){  // base
         //printf("return because base");
+        board.status[action_row * board.col + action_col]='r';
         return;
     }
 
@@ -239,7 +241,7 @@ int main(int argc, char *argv[])
     board.status = init_board(board.row, board.col, '#');
     board.visit = init_board(board.row, board.col, 0);
 
-    place_mine(board);
+    place_mine(&board);
     place_hint(board);
     print_status(board);
 
