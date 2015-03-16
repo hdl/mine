@@ -1,2 +1,2 @@
 default:
-	gcc -Wall -o mine_sweeper.out mine_sweeper.c
+	gcc -Wall -o mine_sweeper.out *.c
