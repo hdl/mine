@@ -4,8 +4,16 @@
 #include <time.h>
 #include "board.h"
 
+/*
+    This file contains all the function for inin board, place mine, etc
+*/
 
 
+
+/*
+    This function is used to init board with num_rows, num_colums,
+    symbol means which char was used to fill the space
+*/
 char * init_board(int num_rows, int num_columns, char symbol){
     int i=0, j=0;
     char *board = (char *)malloc(sizeof(char) * num_columns * num_rows);
@@ -16,7 +24,9 @@ char * init_board(int num_rows, int num_columns, char symbol){
 }
 
 
-
+/*
+    place_mine is used to place random mins with all the info in baord
+*/
 void place_mine(board_t *board){
     int rand_row=0;
     int rand_col=0;
@@ -41,6 +51,9 @@ void place_mine(board_t *board){
 
 }
 
+/*
+    set_hint is used to place hint number for board[i,j]
+*/
 void set_hint(board_t board, int i, int j)
 {
     if( i<0 || i>=board.row || j<0 || j>=board.col)
@@ -53,6 +66,10 @@ void set_hint(board_t board, int i, int j)
     return;
 
 }
+
+/*
+    place_hint is called once for hint number init
+*/
 void place_hint(board_t board){
     int i, j;
     for(i=0; i<board.row; i++)

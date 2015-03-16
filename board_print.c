@@ -4,6 +4,10 @@
 #include <time.h>
 #include "board.h"
 
+
+/*
+    Print board real vales, the final results
+*/
 void print_value(char *board, int num_rows, int num_columns){
     //printf("print values\n");
     int i,j;
@@ -20,6 +24,10 @@ void print_value(char *board, int num_rows, int num_columns){
     printf("%d\n",i);
 }
 
+
+/*
+    Print board status duing the game, which is shown to the player
+*/
 void print_status(board_t board){
     int i,j;
     int num_rows = board.row;

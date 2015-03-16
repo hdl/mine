@@ -5,6 +5,10 @@
 #include <time.h>
 #include "board.h"
 #include "play.h"
+
+/*
+    Make action on board[action_row, action_col] with a char which is action
+*/
 void make_action(board_t board, int action_row, int action_col, char action){
 
     board.status[action_row * board.col + action_col] = action;
@@ -26,7 +30,9 @@ void make_action(board_t board, int action_row, int action_col, char action){
 
 }
 
-
+/*
+    To check if we can win the game
+*/
 int win(board_t board, int row, int col){
     int i,j;
     for(i=0; i<board.row; i++)
@@ -49,6 +55,9 @@ int win(board_t board, int row, int col){
 }
 
 
+/*
+    This is a recusive funtion, in case of a area of 0 is triggered
+*/
 void recsive_reveal(board_t board, int action_row, int action_col){
 
 
