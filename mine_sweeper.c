@@ -8,7 +8,7 @@ typedef struct{
     int row;
     int col;
     int mine_num;
-    int mine_left;
+    int *mine_left;
     unsigned int seed;
     char *values;
     char *status;
@@ -44,7 +44,7 @@ void print_status(board_t board){
     int i,j;
     int num_rows = board.row;
     int num_columns = board.col;
-    printf("There are %d mines left\n", board.mine_left);
+    printf("There are %d mines left\n", *board.mine_left);
     for(i=num_rows-1; i>=0; i--){
         printf("%d ", i);
         for(j=0; j<num_columns-1; j++){
@@ -70,6 +70,8 @@ void place_mine(board_t board){
     int rand_row=0;
     int rand_col=0;
     int counter=0;
+    //printf("seed is %d", board.seed);
+    srand(board.seed);
     while(1){
         rand_row = rand() % board.row;
         rand_col = rand() % board.col;
@@ -168,6 +170,11 @@ int win(board_t board, int row, int col){
                 return 0;
             }
 
+            if(board.values[i*board.col+j] == '*' && board.status[i*board.col+j]!='!'){
+                //printf("return because %d %d", i, j);
+                return 0;
+            }
+
         }
     print_value(board.values, board.row, board.col);
     printf("You Won!!\n");
@@ -180,9 +187,9 @@ void make_action(board_t board, int action_row, int action_col, char action){
     board.status[action_row * board.col + action_col] = action;
 
     if(action == '!'){
-        board.mine_left--;
-        if(board.mine_left<0)
-            board.mine_left=0;
+        (*board.mine_left)--;
+        if(*board.mine_left<0)
+            *board.mine_left=0;
     }
     if(action == 'r' && board.values[action_row * board.col + action_col]=='*'){
         print_value(board.values, board.row, board.col);
@@ -206,6 +213,7 @@ int main(int argc, char *argv[])
     int action_row=0;
     int action_col=0;
     int action;
+    int left;
     if(argc <4){
         printf("Not enough arguments. Usage:\n./mine_sweeper.out num_rows num_cols num_mines [seed])\n");
         return 0;
@@ -217,12 +225,13 @@ int main(int argc, char *argv[])
     board.row = atoi(argv[1]);
     board.col = atoi(argv[2]);
     board.mine_num = atoi(argv[3]);
-    board.mine_left = atoi(argv[3]);
+    left = atoi(argv[3]);
+    board.mine_left = &left;
     if(argc == 5)
         board.seed = atoi(argv[4]);
     else
         board.seed = time(NULL); // need change to time
-    srand(board.seed);
+
 
     //printf("row %d, col %d, mine_num %d\n", board.row, board.col, board.mine_num);
 
@@ -237,7 +246,7 @@ int main(int argc, char *argv[])
     //print_value(board.values, board.row, board.col);
 
     while(1){
-        printf("Enter row a row between 0-%d and a column between 0-%d: ", board.row, board.col);
+        printf("Enter row a row between 0-%d and a column between 0-%d: ", board.row-1, board.col-1);
         scanf("%d %d", &action_row, &action_col);
         if(board.status[action_row * board.col + action_col]!='?' && board.status[action_row * board.col + action_col]!='!'){
             printf("Enter Action\n0. Reveal\n1. Question\n2. Mark\n3. Cancel\nAction: ");
