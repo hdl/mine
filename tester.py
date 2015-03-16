@@ -52,8 +52,8 @@ class Tester(object):
       return Tester.OUTPUT_FILE
     else:
       raise ValueError('Unknown input type ' + typename)
-    
-  
+
+
   def __init__(self, executable,
                usingCmdArgs, usingStdin, outputType,
                inDir, solDir, scratchDir,
@@ -97,10 +97,10 @@ class Tester(object):
       self.userOut = None
     else:
       self.userOut = scratchDir + os.sep + 'userOut.txt' #file to temporarily store the use's output
-    
+
     self.startTime = 0 #when did the test begin running
     self.endTime = 0   #when did the test end running
-    
+
     self.results = [] #the results of the testing
 
   def _runOne(self, inFileName, outFileName = None):
@@ -119,7 +119,7 @@ class Tester(object):
           additionalArgs.append(infile.readline().strip())
       #remaining lines in the file are considerd input to be given
       #via standard input
-  
+
       #determine how outputs will be generated
       outfile = None
       if(self.outputType == Tester.OUTPUT_STDOUT): #outputting to stdout
@@ -132,8 +132,8 @@ class Tester(object):
       #this clears out python's buffer so that the program run through subprocess
       #actually gets input. Another fix if this stops working is to open the file in unbuffered mode
       #http://stackoverflow.com/questions/22417010/subprocess-popen-stdin-read-file
-      infile.seek(infile.tell()) 
-      
+      infile.seek(infile.tell())
+
       studentLogger.info('Preparing to test %s on %s', self.executable, os.path.basename(inFileName))
 
       #start the clocks
@@ -156,13 +156,13 @@ class Tester(object):
             return Tester._PROGRAM_CRASHED
           else:
             return Tester._PROGRAM_COMPLETED
-            
+
         except subprocess.TimeoutExpired:
           studentLogger.warning('%s %s timed out', ' '.join(self.cmdArgs), self.executable)
           program.kill()
           return Tester._PROGRAM_TIMED_OUT
-          
-      
+
+
   #end _runOne
 
   def testOne(self, inFile, solFile):
@@ -195,7 +195,7 @@ class Tester(object):
                 first_diff = 'First mismatch at word %d\nout = %s but sol = %s' % (i,o,s)
                 #print(first_diff)
                 break
-            studentLogger.info('%s %s failed test %s. Program output: %s \n Solution: %s \n%s\n\n',
+            studentLogger.info('%s %s failed test %s. Program output:\n %s \n Solution:\n %s \n%s\n\n',
                              self.executable, ' '.join(self.cmdArgs),
                              os.path.basename(inFile), out, sol, first_diff)
           return Result(testName, correct, self.endTime - self.startTime )
@@ -203,7 +203,7 @@ class Tester(object):
         raise NotImplementedError
   #end testOne
 
-  
+
 
   def generateSolutions(self):
     """generates all the solutions"""
@@ -239,7 +239,7 @@ class Tester(object):
     """get the results of the testing"""
     return self.results.copy()
   #end getResults
-  
+
   def getNumTests(self):
     """get the number of tests that are to be preformed"""
     return len(self.testFiles)
@@ -276,7 +276,7 @@ class Tester(object):
     """
     return [res.testName for res in self.results if not res.correct]
   #end getMissedTests
-  
+
   def getPassedTests(self):
     """
     get a list of the test names that were passed correctly
@@ -302,27 +302,27 @@ class Tester(object):
     @returns a tuple containing
     (correct, program out, solution)
     """
-    
+
     progOut.flush() #make sure the file is up to date
     progOut.seek(0) #go back to the begining of the file
-  
+
     try:
       sol = []
       with open(solutionFileName, 'r') as solFil: #open the solution file
         for (_1,_2,_3) in zip(range(self.lines2skip), progOut, solFil): #somehow placin zip as the first argument fixes a bug
           pass #skip the leading lines of input
-          
+
         sol = [] #the solution
         for line in solFil: #make it so that white space does not matter
           sol += line.strip().split()
-          
+
         out = [] # the programs output
         for line in progOut: #make it so that white space will not be an issue
           out += line.strip().split()
-          
+
         if(out != sol):#output does not match solution
           return (False, out, sol)
-         
+
       return (True, out, sol) #if everything is correct and all lines in the solution file are used the student got it right
     except UnicodeDecodeError:
       return (False, 'NonUnicode Character. This means your print statement is printing something crazy.', sol)
@@ -331,7 +331,7 @@ class Tester(object):
 #end class Tester
 
 if __name__ =='__main__':
-  t = Tester('./mine_sweeper.out', True, True, Tester.OUTPUT_STDOUT, 
+  t = Tester('./mine_sweeper.out', True, True, Tester.OUTPUT_STDOUT,
               'Tests', 'Solutions', '.',)
   t.testAll()
   for res in t.getResults():
